@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Notes App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen" style="display: none;">
+        <div class="splash-content">
+            <div class="logo-container">
+                <div class="logo-animation">
+                    <div class="logo-circle"></div>
+                    <div class="logo-particles">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="slogan-container">
+                <p class="slogan">未来教育的课堂入口</p>
+                <div class="slogan-underline"></div>
+            </div>
+            <div class="loader-container">
+                <div class="loader-bar">
+                    <div class="loader-progress"></div>
+                </div>
+                <div class="loader-text">正在启动智能学习空间...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Page -->
+    <div id="home-page">
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="home-icon">
+                   <i class="fas fa-home"></i>
+                </div>
+            </div>
+            <div class="library-icon">
+                <div class="icon-circle">
+                   <i class="fas fa-book"></i>
+                </div>
+            </div>
+            <img src="https://ai-notes.oss-cn-shenzhen.aliyuncs.com/logo_symbol_dark.png" alt="AI Notes Logo" class="small-logo">
+            
+            <div class="user-menu">
+                
+                <div class="search-container">
+                    <i class="fas fa-search search-icon-only"></i>
+                    <input type="text" class="search-input" placeholder="搜索...">
+                </div>
+                <i class="fas fa-check-square multi-select-icon"></i>
+                <i id="settings-link" class="fas fa-cog"></i>
+                
+                
+            </div>
+        </header>
+
+        <!-- Sidebar for Tags -->
+        <aside id="sidebar" class="sidebar collapsed">
+            <div class="sidebar-main-nav">
+                <a href="#" id="all-files-link" class="sidebar-item"><i class="fas fa-folder"></i><span>所有文件</span></a>
+                <a href="#" id="favorites-link" class="sidebar-item"><i class="fas fa-star"></i><span>我的收藏</span></a>
+                <a href="#" id="trash-link" class="sidebar-item"><i class="fas fa-trash"></i><span>回收站</span></a>
+            </div>
+            <div class="sidebar-section-header">
+                <h3 class="sidebar-title">笔记标签</h3>
+                <span id="edit-tags-btn" class="edit-tags-btn">编辑标签</span>
+            </div>
+            <div class="sidebar-actions">
+                <div class="sidebar-search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="sidebar-tag-search" placeholder="搜索标签...">
+                </div>
+                <button id="add-new-tag-btn" class="add-tag-btn"><i class="fas fa-plus"></i> 新建标签</button>
+            </div>
+            <div id="trash-bin-container" class="sidebar-item">
+            </div>
+            <div id="sidebar-tags" class="sidebar-tags">
+                <ul class="tags-list"></ul>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-item"><i class="fas fa-question-circle"></i><span>帮助中心</span></a>
+                <a href="#" class="sidebar-item"><i class="fas fa-comment-dots"></i><span>问题反馈</span></a>
+                <a href="#" class="sidebar-item"><i class="fas fa-info-circle"></i><span>关于我们</span></a>
+            </div>
+        </aside>
+
+        <main class="home-main-content">
+            <!-- Learning Dashboard -->
+            <section class="dashboard-section">
+                <div id="ai-creation-cta" class="ai-creation-cta clickable">
+                    <div class="cta-content">
+                        <h3>AI 创作空间</h3>
+                        <p>在这里，将你的笔记、文件和想法转化为非凡的创作。</p>
+                    </div>
+                    <div class="cta-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Notes -->
+            <section class="recent-notes-section">
+                <div class="home-section recent-notes-section">
+                    <div class="section-header">
+                        <h2 class="section-title">最近笔记</h2>
+                        <div class="view-toggle-buttons">
+                            <button id="grid-view-btn" class="view-toggle-btn active"><i class="fas fa-th-large"></i></button>
+                            <button id="list-view-btn" class="view-toggle-btn"><i class="fas fa-list"></i></button>
+                        </div>
+                    </div>
+                    <div id="notes-container" class="notes-grid"></div>
+                </div>
+                <div id="empty-state-placeholder" class="empty-state-placeholder" style="display: none;">
+                    <div class="empty-state-content">
+                        <i class="fas fa-folder-open"></i>
+                        <p>这个分类下还没有笔记</p>
+                        <button class="add-note-shortcut-btn" ><i class="fas fa-plus"></i> 新建一篇笔记</button>
+                    </div>
+                </div>
+            </section>
+
+           
+        </main>
+
+        <button class="fab">+ 新笔记 </button>
+    </div>
+
+    <!-- Global Search Bar -->
+    <!--
+    <div id="global-search-overlay" class="global-search-overlay">
+        <div class="search-bar-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="global-search-input" placeholder="搜索所有笔记...">
+            <button id="close-search-btn" class="close-search-btn">&times;</button>
+        </div>
+    </div>
+    -->
+
+    <!-- Document Viewer Page -->
+    <div id="document-viewer-page" class="page" style="display: none;">
+        <header class="top-nav">
+            <div class="nav-left">
+                <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+            </div>
+            <div class="document-tabs">
+                <button class="doc-tab-btn active" data-type="pdf">PDF</button>
+                <button class="doc-tab-btn" data-type="word">Word</button>
+                <button class="doc-tab-btn" data-type="ppt">PPT</button>
+                <button class="doc-tab-btn" data-type="excel">Excel</button>
+            </div>
+            <div class="nav-right">
+                <i class="fas fa-search"></i>
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </header>
+        <main class="document-content">
+            <!-- Content for different document types will be loaded here -->
+            <div id="pdf-content" class="doc-content-panel active">
+                <p>PDF content goes here.</p>
+            </div>
+            <div id="word-content" class="doc-content-panel">
+                <p>Word content goes here.</p>
+            </div>
+            <div id="ppt-content" class="doc-content-panel">
+                <p>PPT content goes here.</p>
+            </div>
+            <div id="excel-content" class="doc-content-panel">
+                <p>Excel content goes here.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Note Creation Panel -->
+    <div id="new-note-panel" class="bottom-panel">
+        <div class="panel-content">
+            <div class="options-grid">
+                <div class="option-card">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span>手写笔记</span>
+                </div>
+                <div class="option-card">
+                    <i class="fas fa-camera"></i>
+                    <span>扫描</span>
+                </div>
+                 <div class="option-card">
+                    <i class="fas fa-microphone"></i>
+                    <span>录音</span>
+                </div>
+                <div class="option-card">
+                    <i class="fas fa-upload"></i>
+                    <span>导入</span>
+                </div>
+            </div>
+         
+        </div>
+    </div>
+
+    <!-- Handwriting Input Page -->
+    <div id="handwriting-page" class="page">
+        <!-- Multi-tab container -->
+       
+        <div class="note-tabs-container">
+             <button class="back-btn">
+                <div class="back-btn-inner">
+                    <i class="fas fa-arrow-left"></i>
+                    <span class="back-btn-ripple"></span>
+                </div>
+             </button>
+            <div class="note-tabs">
+                <!-- Sample Tab (active) -->
+                <div class="note-tab active" data-tab-id="note-1">
+                    <span>首页</span>
+                    <button class="close-tab-btn">&times;</button>
+                </div>               
+            </div>
+            <button class="add-tab-btn"><i class="fas fa-plus"></i></button>
+            <div class="tab-list-options">
+                <button class="tab-list-btn"><i class="fas fa-list-ul"></i></button>
+                <div class="tabs-dropdown">
+                    <!-- Dropdown items will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Unified Toolbar -->
+        <div class="handwriting-toolbar">
+
+            <div class="toolbar-group">
+                <button class="toolbar-button" title="撤回"><i class="fas fa-undo"></i></button>
+                <button class="toolbar-button" title="重做"><i class="fas fa-redo"></i></button>
+                <button class="toolbar-button" title="导入文件"><i class="fas fa-file-import"></i></button>
+            </div>
+            <div class="toolbar-group">
+                <div class="handwriting-mode-dropdown">
+                    <button class="toolbar-button" title="手写模式"><i class="fas fa-pen"></i> <i class="fas fa-caret-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="#"><i class="fas fa-pen"></i> 手写</a>
+                        <a href="#"><i class="fas fa-hand-pointer"></i> 手指</a>
+                        <a href="#"><i class="fas fa-mouse-pointer"></i> 点读</a>
+                    </div>
+                </div>
+               
+            </div>
+            <div class="toolbar-group separator"></div>
+            <div class="toolbar-group">
+                <div class="brush-tool-container">
+                    <button class="toolbar-button active" title="笔刷" id="brush-tool"><i class="fas fa-paint-brush"></i></button>
+                    <div class="brush-panel" id="brush-panel">
+                        <div class="brush-section">
+                            <h4>笔形</h4>
+                            <div class="brush-types">
+                                <button class="brush-type active" data-type="pen">
+                                    <i class="fas fa-pen"></i>
+                                    <span>钢笔</span>
+                                </button>
+                                <button class="brush-type" data-type="pencil">
+                                    <i class="fas fa-pencil-alt"></i>
+                                    <span>铅笔</span>
+                                </button>
+                                <button class="brush-type" data-type="brush">
+                                    <i class="fas fa-brush"></i>
+                                    <span>毛笔</span>
+                                </button>
+                                <button class="brush-type" data-type="marker">
+                                    <i class="fas fa-highlighter"></i>
+                                    <span>荧光笔</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="brush-section">
+                            <h4>笔迹</h4>
+                            <div class="stroke-sizes">
+                                <button class="stroke-size" data-size="2">
+                                    <div class="size-preview size-xs"></div>
+                                </button>
+                                <button class="stroke-size" data-size="4">
+                                    <div class="size-preview size-s"></div>
+                                </button>
+                                <button class="stroke-size active" data-size="6">
+                                    <div class="size-preview size-m"></div>
+                                </button>
+                                <button class="stroke-size" data-size="8">
+                                    <div class="size-preview size-l"></div>
+                                </button>
+                                <button class="stroke-size" data-size="10">
+                                    <div class="size-preview size-xl"></div>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="brush-section">
+                            <h4>颜色</h4>
+                            <div class="color-palette">
+                                <button class="color-option active" data-color="#000000" style="background-color: #000000;"></button>
+                                <button class="color-option" data-color="#FF0000" style="background-color: #FF0000;"></button>
+                                <button class="color-option" data-color="#00FF00" style="background-color: #00FF00;"></button>
+                                <button class="color-option" data-color="#0000FF" style="background-color: #0000FF;"></button>
+                                <button class="color-option" data-color="#FFA500" style="background-color: #FFA500;"></button>
+                                <button class="color-option" data-color="#800080" style="background-color: #800080;"></button>
+                                <button class="color-option" data-color="#FFC0CB" style="background-color: #FFC0CB;"></button>
+                                <button class="color-option" data-color="#A52A2A" style="background-color: #A52A2A;"></button>
+                            </div>
+                        </div>
+                        <div class="brush-section opacity-section">
+                            <h4>不透明度</h4>
+                            <input type="range" class="opacity-slider" min="0" max="100" value="100">
+                            <span class="opacity-value">100%</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="toolbar-button" title="橡皮"><i class="fas fa-eraser"></i></button>
+                <button class="toolbar-button" title="文字输入"><i class="fas fa-font"></i></button>
+                 <button class="toolbar-button" title="图形"><i class="fas fa-shapes"></i></button>
+                <button class="toolbar-button" title="图片" id="insert-image-btn"><i class="fas fa-image"></i></button>
+                <button class="toolbar-button" title="截图"><i class="fas fa-crop-alt"></i></button>
+                 <button class="toolbar-button" title="OCR"><i class="fas fa-magic"></i></button>
+                <button class="toolbar-button" title="注释"><i class="fas fa-comment-dots"></i></button>
+                 <button class="toolbar-button" title="链接"><i class="fas fa-link"></i></button>
+                <button class="toolbar-button" title="录音"><i class="fas fa-microphone"></i></button>
+                 <button class="toolbar-button" title="框选"><i class="fas fa-vector-square"></i></button>
+                              
+            </div>
+            <div class="toolbar-group separator">
+           
+                 <button class="toolbar-button" title="图层"><i class="fas fa-layer-group"></i></button>
+                <button class="toolbar-button" title="分屏"><i class="fas fa-columns"></i></button>
+                <button class="toolbar-button" title="设置"><i class="fas fa-cog"></i></button>
+
+                <div class="toolbar-button-group">
+                
+                   
+                </div>
+              
+            </div>
+        </div>
+    
+        <!-- Canvas for handwriting -->
+        <div class="canvas-container">
+            <div class="note-content-wrapper">
+                <canvas id="handwriting-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera Page -->
+    <div id="camera-page" style="display: none;">
+        <video id="camera-feed" autoplay></video>
+        <div class="camera-controls">
+            <button class="back-btn"><i class="fas fa-times"></i></button>
+            <button id="capture-btn" class="capture-circle"></button>
+        </div>
+    </div>
+
+    <!-- Photo Review Page -->
+    <div id="photo-review-page" style="display: none;">
+        <header class="top-toolbar">
+            <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+            <h2 class="page-title">识别结果</h2>
+            <button id="save-ocr-note-btn" class="action-btn save-btn">保存</button>
+        </header>
+        <main class="photo-review-main">
+            <div class="photo-preview-container">
+                <canvas id="photo-canvas"></canvas>
+            </div>
+            <div class="ocr-result-container">
+                <textarea id="ocr-textarea" placeholder="OCR识别结果将显示在这里..."></textarea>
+            </div>
+            <div class="file-preview-container">
+                <div class="file-preview-header">文件预览</div>
+                <div class="file-preview-content">
+                    <img src="https://picsum.photos/800/400" alt="File Preview">
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- AI工具页面 -->
+    <div id="ai-creation-page" class="page" style="display: none;">
+    <div class="page-header">
+        <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+        <h2>AI 创作空间</h2>
+    </div>
+    <div class="ai-creation-content">
+        <div class="selected-notes-panel">
+            <div class="panel-header">
+                <h4>已选内容</h4>
+                <div class="panel-header-actions">
+                    <button id="clear-selection-btn">清空</button>
+                    <button id="toggle-selection-panel-btn" class="panel-toggle-btn"><i class="fas fa-chevron-left"></i></button>
+                </div>
+            </div>
+            <div class="selection-search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="selection-search-input" placeholder="搜索已选内容...">
+            </div>
+            <div class="selection-tags-container">
+                <!-- Tags will be dynamically populated here -->
+            </div>
+            <ul class="selected-notes-list">
+                <!-- Selected notes will be dynamically populated here -->
+            </ul>
+        </div>
+        <div class="ai-tools-panel">
+            <div class="ai-panel-tabs">
+                <button class="ai-tab-btn active" data-tab="tools">创作工具</button>
+                <button class="ai-tab-btn" data-tab="templates">工作流模板</button>
+            </div>
+
+            <div id="tools-tab-content" class="ai-tab-content active">
+                <!-- Tools Content -->
+                <div class="ai-tool-category">
+                    <h5>文本处理</h5>
+                    <div class="ai-tools-grid">
+                        <div class="ai-tool-card">
+                            <div class="tool-icon"><i class="fas fa-file-alt"></i></div>
+                            <h4>生成摘要</h4>
+                            <p>输入: 长文本/文档<br>输出: 核心摘要</p>
+                        </div>
+                        <div class="ai-tool-card">
+                            <div class="tool-icon"><i class="fas fa-key"></i></div>
+                            <h4>提取关键词</h4>
+                            <p>输入: 文本<br>输出: 关键词列表</p>
+                        </div>
+                        <div class="ai-tool-card">
+                            <div class="tool-icon"><i class="fas fa-language"></i></div>
+                            <h4>翻译</h4>
+                            <p>输入: 文本<br>输出: 多语言译文</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="ai-tool-category">
+                    <h5>内容生成</h5>
+                    <div class="ai-tools-grid">
+                        <div class="ai-tool-card">
+                            <div class="tool-icon"><i class="fas fa-lightbulb"></i></div>
+                            <h4>头脑风暴</h4>
+                            <p>输入: 主题/关键词<br>输出: 相关想法</p>
+                        </div>
+                        <div class="ai-tool-card">
+                            <div class="tool-icon"><i class="fas fa-pen-fancy"></i></div>
+                            <h4>内容续写</h4>
+                            <p>输入: 草稿/段落<br>输出: 完整内容</p>
+                        </div>
+                        <div class="ai-tool-card">
+                            <div class="tool-icon"><i class="fas fa-share-alt"></i></div>
+                            <h4>社媒文案</h4>
+                            <p>输入: 文章/主题<br>输出: 推广文案</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="templates-tab-content" class="ai-tab-content">
+                <!-- Templates Content -->
+                <div class="ai-tools-grid">
+                    <div class="ai-tool-card workflow-card">
+                        <div class="tool-icon"><i class="fas fa-book-reader"></i></div>
+                        <h4>学术论文助手</h4>
+                        <p>从文献综述到草稿撰写，一站式辅助论文写作。</p>
+                    </div>
+                    <div class="ai-tool-card workflow-card">
+                        <div class="tool-icon"><i class="fas fa-chart-bar"></i></div>
+                        <h4>市场分析报告</h4>
+                        <p>自动分析用户反馈，生成数据洞察报告。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Note Detail Page (New) -->
+    <div id="note-detail-page" class="page" style="display: none;">
+         <div class="note-content-container"></div>
+        <div class="note-detail-container">
+
+            <!-- Left Sidebar -->
+            <aside class="note-sidebar-left">
+                <div class="note-meta-section">
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i> 返回</button>
+                    <input type="text" class="note-title-input" placeholder="输入笔记标题">
+                    <div class="note-tags-container"></div>
+                    <p class="note-dates">创建于: <span></span> / 修改于: <span></span></p>
+                </div>
+                <div class="note-toc-section">
+                    <h4>大纲</h4>
+                    <ul class="toc-list"></ul>
+                </div>
+            </aside>
+    
+            <!-- Main Content Editor -->
+            <main class="note-editor-main">
+                <div class="editor-toolbar"></div>
+                <div id="editor-container"></div>
+            </main>
+    
+            <!-- Right AI Panel -->
+            <aside class="note-sidebar-right">
+                <h4>AI 助手</h4>
+                <div class="ai-panel-content"></div>
+            </aside>
+        </div>
+    </div>
+</div>
+
+    <!-- 其他页面 -->
+    <div id="all-notes-page" class="page" style="display: none;">
+        <header class="top-toolbar">
+            <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+            <h2 class="page-title">All</h2>
+        </header>
+        <main class="all-notes-main">
+            <div class="notes-controls">
+                <div class="filter-group">
+                    <button class="filter-btn active">全部</button>
+                    <button class="filter-btn">已辅导</button>
+                    <button class="filter-btn">未辅导</button>
+                </div>
+                <div class="sort-group">
+                    <select class="sort-select">
+                        <option value="date-desc">按日期降序</option>
+                        <option value="date-asc">按日期升序</option>
+                        <option value="title-asc">按标题升序</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="notes-grid all-notes-grid">
+                <!-- Sample Note Card 1 -->
+                <div class="note-card selectable">
+                    <input type="checkbox" class="note-checkbox">
+                    <div class="note-thumbnail"></div>
+                    <div class="note-info">
+                        <h3 class="note-title">数学公式笔记</h3>
+                        <p class="note-date">创建于: 2024-07-29</p>
+                        <span class="ai-status">已辅导</span>
+                    </div>
+                </div>
+                <div class="note-card selectable">
+                    <input type="checkbox" class="note-checkbox">
+                    <div class="note-thumbnail"></div>
+                    <div class="note-info">
+                        <h3 class="note-title">物理实验记录</h3>
+                        <p class="note-date">创建于: 2024-07-28</p>
+                    </div>
+                </div>
+                <div class="note-card selectable">
+                    <input type="checkbox" class="note-checkbox">
+                    <div class="note-thumbnail"></div>
+                    <div class="note-info">
+                        <h3 class="note-title">课堂重点</h3>
+                        <p class="note-date">创建于: 2024-07-27</p>
+                        <span class="ai-status">已辅导</span>
+                    </div>
+                </div>
+               
+                <!-- Add more note cards as needed -->
+            </div>
+        </main>
+    </div>
+
+<!-- Audio Recorder Page -->
+<div id="audio-recorder-page" class="page">
+    <div class="top-bar">
+        <div class="button-group"><button class="back-btn"><div class="back-btn-inner"><i class="fas fa-arrow-left"></i><span class="back-btn-ripple"></span></div></button>
+        <h2 class="page-title">录音</h2>
+        <button id="save-recording-note"><i class="fas fa-save"></i></button>
+    </div>
+    </div>
+    <div class="recorder-container">
+        <div id="recording-timer">00:00</div>
+        <button id="record-control-btn" class="record-btn">
+            <i class="fas fa-microphone"></i>
+        </button>
+        <div id="recording-status">点击按钮开始录音</div>
+        <audio id="audio-playback" controls style="display: none;"></audio>
+    </div>
+</div>
+
+
+
+    <!-- Import File Page -->
+    <div id="import-page" style="display: none;">
+        <header class="top-toolbar">
+            <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+            <h2 class="page-title">导入文件</h2>
+            <button class="action-btn process-btn">开始处理</button>
+        </header>
+        <main class="import-main">
+            <div class="upload-area">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>拖放文件到这里，或点击选择文件</p>
+                <input type="file" id="file-input" hidden multiple>
+                <button class="upload-btn">选择文件</button>
+            </div>
+            <div class="file-list">
+                <!-- Selected files will be listed here -->
+            </div>
+        </main>
+
+        <!-- Import Processing View -->
+        <div id="import-processing-view" class="import-processing-view" style="display: none;">
+            <div class="import-preview-container">
+                <img src="https://via.placeholder.com/800x400.png?text=Content+Preview" alt="File Preview">
+            </div>
+            <div class="import-tabs-container">
+                <div class="import-tabs">
+                    <button class="import-tab-btn active" data-tab="notebook">Notebook</button>
+                    <button class="import-tab-btn" data-tab="reader">Reader</button>
+                    <button class="import-tab-btn" data-tab="chat">Chat</button>
+                    <button class="import-tab-btn" data-tab="quiz">Quiz</button>
+                    <button class="import-tab-btn" data-tab="connections">Connections</button>
+                    <button class="import-tab-btn" data-tab="graph">Graph</button>
+                </div>
+                <div id="tab-content-notebook" class="import-tab-content active">
+                    <h4>AI 摘要</h4>
+                    <p>这是由AI生成的文档摘要...</p>
+                </div>
+                <div id="tab-content-reader" class="import-tab-content">
+                    <h4>转录文本原文</h4>
+                    <p>这是文档的完整转录文本...</p>
+                </div>
+                <div id="tab-content-chat" class="import-tab-content">
+                    <h4>AI 对话</h4>
+                    <p>与AI就本文档内容进行对话...</p>
+                </div>
+                <div id="tab-content-quiz" class="import-tab-content">
+                    <h4>知识测验</h4>
+                    <p>基于本文档生成的测验题目...</p>
+                </div>
+                <div id="tab-content-connections" class="import-tab-content">
+                    <h4>AI标签与历史笔记的关系图</h4>
+                    <p>关系图谱展示区域...</p>
+                </div>
+                <div id="tab-content-graph" class="import-tab-content">
+                    <h4>文件内容构建的知识图谱</h4>
+                    <p>知识图谱展示区域...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settings-page" style="display: none;">
+        <header class="top-toolbar">
+            <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+            <h2 class="page-title">设置</h2>
+        </header>
+        <main class="settings-main">
+            <div class="settings-section">
+                
+                <div class="avatar-container" style="position: relative;">
+                        <h3><img class="user-avatar" src="https://img1.baidu.com/it/u=4185652677,1688578718&fm=253&fmt=auto&app=138&f=PNG?w=500&h=500" width="42" height="42"></h3>
+                    </div>
+                <div class="setting-item">
+                    <span>用户名</span>
+                    <span class="value">User2024</span>
+                </div>
+                <div class="setting-item">
+                    <span>邮箱</span>
+                    <span class="value">user@example.com</span>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>外观</h3>
+                <div class="setting-item">
+                    <span>深色模式</span>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-switch">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>语言</span>
+                    <select id="language-select" class="setting-select">
+                        <option value="en">English</option>
+                        <option value="zh-CN" selected>简体中文</option>
+                    </select>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>AI 配置</h3>
+                <div class="setting-item">
+                    <span>智能体 (Agent)</span>
+                    <input type="text" class="setting-input" id="agent-config" placeholder="输入智能体配置">
+                </div>
+                <div class="setting-item">
+                    <span>MCP</span>
+                    <input type="text" class="setting-input" id="mcp-config" placeholder="输入MCP配置">
+                </div>
+                <div class="setting-item">
+                    <span>上下文 (Context)</span>
+                    <input type="text" class="setting-input" id="context-config" placeholder="输入上下文配置">
+                </div>
+                <div class="setting-item">
+                    <span>规则 (Rules)</span>
+                    <input type="text" class="setting-input" id="rules-config" placeholder="输入规则配置">
+                </div>
+                <div class="setting-item">
+                    <span>模型 (Model)</span>
+                    <input type="text" class="setting-input" id="model-config" placeholder="输入模型配置">
+                </div>
+            </div>
+            <button class="logout-btn">退出登录</button>
+        </main>
+    </div>
+
+    <!-- File Manager Page -->
+    <div id="file-manager-page" class="page with-sidebar" style="display: none;">
+        <aside class="sidebar file-manager-sidebar">
+            <h3 class="sidebar-title">文件筛选</h3>
+            <div class="sidebar-section">
+                <h4>文件类型</h4>
+                <ul class="filter-list" id="file-type-filter-list">
+                    <li class="filter-item active" data-filter="all">所有类型</li>
+                    <li class="filter-item" data-filter="pdf">PDF 文档</li>
+                    <li class="filter-item" data-filter="image">图片</li>
+                    <li class="filter-item" data-filter="audio">音频</li>
+                    <li class="filter-item" data-filter="video">视频</li>
+                    <li class="filter-item" data-filter="doc">文档</li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h4>所属笔记/文件夹</h4>
+                <select id="file-note-filter" class="sidebar-select">
+                    <option value="all">所有位置</option>
+                    <!-- Note options will be populated by script.js -->
+                </select>
+            </div>
+             <div class="sidebar-section">
+                <h4>日期范围</h4>
+                <input type="date" id="file-date-filter" class="sidebar-input">
+            </div>
+        </aside>
+
+        <main class="main-content file-manager-main">
+            <header class="top-toolbar">
+                <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                <h2 class="page-title">文件管理</h2>
+                <div class="header-actions">
+                    <input type="text" id="file-search-input" class="header-search-bar" placeholder="搜索文件名...">
+                    <button class="action-btn"><i class="fas fa-sort-amount-down"></i> 排序</button>
+                </div>
+            </header>
+            <div class="file-list-container">
+                <!-- File items will be populated by script.js -->
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+   
+
+ <!-- 我的收藏页面 -->
+    <div id="favorites-page" class="page with-sidebar" style="display: none;">
+       
+
+        <main class="main-content">
+            <header class="top-toolbar">
+                <button class="back-btn" id="favorites-main-back"><i class="fas fa-arrow-left"></i></button>
+                <h2 class="page-title">我的收藏</h2>
+                
+            </header>
+            <div class="favorites-content">
+                <div id="favorites-grid" class="notes-grid"></div>
+                <div id="favorites-empty" class="empty-state-placeholder" style="display: none;">
+                    <div class="empty-state-content">
+                        <i class="fas fa-star"></i>
+                        <p>还没有收藏的笔记</p>
+                        <p>点击笔记右上角的书签图标来收藏笔记</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
